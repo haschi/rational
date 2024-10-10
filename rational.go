@@ -23,6 +23,10 @@ type Rational struct {
 }
 
 func (r Rational) String() string {
+	if r.IsNaN() {
+		return "NaN"
+	}
+
 	if r.denominator == 1 {
 		return fmt.Sprint(r.numerator)
 	}
@@ -47,24 +51,40 @@ func gcd(a, b int) int {
 }
 
 func (left Rational) Plus(right Rational) Rational {
+	if left.IsNaN() || right.IsNaN() {
+		return Rational{}
+	}
+
 	numerator := right.numerator*left.denominator + left.numerator*right.denominator
 	denominator := right.denominator * left.denominator
 	return Rational{numerator, denominator}.normalize()
 }
 
 func (left Rational) Minus(right Rational) Rational {
+	if left.IsNaN() || right.IsNaN() {
+		return Rational{}
+	}
+
 	numerator := left.numerator*right.denominator - right.numerator*left.denominator
 	denominator := right.denominator * left.denominator
 	return Rational{numerator, denominator}.normalize()
 }
 
 func (left Rational) Times(right Rational) Rational {
+	if left.IsNaN() || right.IsNaN() {
+		return Rational{}
+	}
+
 	numerator := left.numerator * right.numerator
 	denominator := left.denominator * right.denominator
 	return Rational{numerator, denominator}.normalize()
 }
 
 func (left Rational) DivideBy(right Rational) Rational {
+	if left.IsNaN() || right.IsNaN() {
+		return Rational{}
+	}
+
 	numerator := left.numerator * right.denominator
 	denominator := left.denominator * right.numerator
 	return Rational{numerator, denominator}.normalize()
@@ -77,4 +97,8 @@ func (r Rational) normalize() Rational {
 		result = Rational{result.numerator * -1, result.denominator * -1}
 	}
 	return result
+}
+
+func (r Rational) IsNaN() bool {
+	return r.denominator == 0
 }

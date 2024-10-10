@@ -22,6 +22,10 @@ func TestString(t *testing.T) {
 			number: FromInt(1),
 			want:   "1",
 		},
+		"NaN": {
+			number: Rational{},
+			want:   "NaN",
+		},
 	}
 
 	for name, test := range tests {
@@ -73,6 +77,9 @@ func TestPlus(t *testing.T) {
 		"1/2 + 1/2 = 1":   {Rational{1, 2}, Rational{1, 2}, FromInt(1)},
 		"2 + 3 = 5":       {FromInt(2), FromInt(3), FromInt(5)},
 		"1/2 + 1/3 = 5/6": {Rational{1, 2}, Rational{1, 3}, Rational{5, 6}},
+		"NaN + 1/2 = NaN": {Rational{1, 0}, Rational{1, 2}, Rational{}},
+		"1/2 + NaN = NaN": {Rational{1, 0}, Rational{1, 2}, Rational{}},
+		"NaN + NaN = NaN": {Rational{}, Rational{}, Rational{}},
 	}
 
 	for name, test := range tests {
@@ -93,6 +100,9 @@ func TestMinus(t *testing.T) {
 		"-1/3 - 1/5 = -8/15":  {Rational{-1, 3}, Rational{1, 5}, Rational{-8, 15}},
 		"-1/3 - -1/5 = -2/15": {Rational{-1, 3}, Rational{-1, 5}, Rational{-2, 15}},
 		"2/3 - 1/2 = 1/6":     {Rational{2, 3}, Rational{1, 2}, Rational{1, 6}},
+		"NaN - 1/2 = NaN":     {Rational{1, 0}, Rational{1, 2}, Rational{}},
+		"1/2 - NaN = Nan":     {Rational{1, 2}, Rational{42, 0}, Rational{}},
+		"NaN - NaN = NaN":     {Rational{5, 0}, Rational{7, 0}, Rational{}},
 	}
 
 	for name, test := range tests {
@@ -113,6 +123,8 @@ func TestTimes(t *testing.T) {
 		"-1/3 * -1/5 = -1/15": {Rational{-1, 3}, Rational{1, 5}, Rational{-1, 15}},
 		"1/3 * -1/5 = -1/15":  {Rational{1, 3}, Rational{-1, 5}, Rational{-1, 15}},
 		"1/2 * 3/4 = 3/8":     {Rational{1, 2}, Rational{3, 4}, Rational{3, 8}},
+		"NaN * 1/2 = NaN":     {Rational{}, Rational{1, 2}, Rational{}},
+		"1/2 * NaN = NaN":     {Rational{1, 2}, Rational{47, 0}, Rational{}},
 	}
 
 	for name, test := range tests {
@@ -132,6 +144,8 @@ func TestDivideBy(t *testing.T) {
 		"-2/3 / 4/5 = -5/6": {Rational{-2, 3}, Rational{4, 5}, Rational{-5, 6}},
 		"2/3 / -4/5 = 5/6":  {Rational{2, 3}, Rational{-4, 5}, Rational{-5, 6}},
 		"1/2 / 3/4 = 2/3":   {Rational{1, 2}, Rational{3, 4}, Rational{2, 3}},
+		"1/2 / NaN = NaN":   {Rational{1, 2}, Rational{}, Rational{}},
+		"NaN / 1/2 = NaN":   {Rational{}, Rational{1, 2}, Rational{}},
 	}
 
 	for name, test := range tests {
@@ -142,7 +156,26 @@ func TestDivideBy(t *testing.T) {
 	}
 }
 
+func TestIsNaN(t *testing.T) {
+	tests := map[string]struct {
+		r    Rational
+		want bool
+	}{
+		"0/0":  {Rational{0, 0}, true},
+		"1/0":  {Rational{1, 0}, true},
+		"-1/0": {Rational{-1, 0}, true},
+		"0/1":  {Rational{0, 1}, false},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			equal(t, test.r.IsNaN(), test.want)
+		})
+	}
+}
+
 func equal[T comparable](t *testing.T, got, want T) {
+	t.Helper()
 	if got != want {
 		t.Errorf("got %v; want %v", got, want)
 	}
