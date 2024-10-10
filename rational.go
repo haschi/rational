@@ -18,8 +18,8 @@ import (
 //
 // Die Ergebnisse aller Operationen mit undefinierten rationalen Zahl führen wiederum zu einer undefinierten rationalen Zahl.
 type Rational struct {
-	numerator   int
-	denominator int
+	Numerator   int
+	Denominator int
 }
 
 func (r Rational) String() string {
@@ -27,18 +27,18 @@ func (r Rational) String() string {
 		return "NaN"
 	}
 
-	if r.denominator == 1 {
-		return fmt.Sprint(r.numerator)
+	if r.Denominator == 1 {
+		return fmt.Sprint(r.Numerator)
 	}
 
-	return fmt.Sprintf("%d/%d", r.numerator, r.denominator)
+	return fmt.Sprintf("%d/%d", r.Numerator, r.Denominator)
 }
 
 // FromInt converts an integer to a rational number.
 func FromInt(numerator int) Rational {
 	return Rational{
-		numerator:   numerator,
-		denominator: 1,
+		Numerator:   numerator,
+		Denominator: 1,
 	}
 }
 
@@ -55,8 +55,8 @@ func (left Rational) Plus(right Rational) Rational {
 		return Rational{}
 	}
 
-	numerator := right.numerator*left.denominator + left.numerator*right.denominator
-	denominator := right.denominator * left.denominator
+	numerator := right.Numerator*left.Denominator + left.Numerator*right.Denominator
+	denominator := right.Denominator * left.Denominator
 	return Rational{numerator, denominator}.normalize()
 }
 
@@ -65,8 +65,8 @@ func (left Rational) Minus(right Rational) Rational {
 		return Rational{}
 	}
 
-	numerator := left.numerator*right.denominator - right.numerator*left.denominator
-	denominator := right.denominator * left.denominator
+	numerator := left.Numerator*right.Denominator - right.Numerator*left.Denominator
+	denominator := right.Denominator * left.Denominator
 	return Rational{numerator, denominator}.normalize()
 }
 
@@ -75,8 +75,8 @@ func (left Rational) Times(right Rational) Rational {
 		return Rational{}
 	}
 
-	numerator := left.numerator * right.numerator
-	denominator := left.denominator * right.denominator
+	numerator := left.Numerator * right.Numerator
+	denominator := left.Denominator * right.Denominator
 	return Rational{numerator, denominator}.normalize()
 }
 
@@ -85,20 +85,20 @@ func (left Rational) DivideBy(right Rational) Rational {
 		return Rational{}
 	}
 
-	numerator := left.numerator * right.denominator
-	denominator := left.denominator * right.numerator
+	numerator := left.Numerator * right.Denominator
+	denominator := left.Denominator * right.Numerator
 	return Rational{numerator, denominator}.normalize()
 }
 
 func (r Rational) normalize() Rational {
-	gcd := gcd(r.numerator, r.denominator)
-	result := Rational{r.numerator / gcd, r.denominator / gcd}
-	if result.denominator < 1 {
-		result = Rational{result.numerator * -1, result.denominator * -1}
+	gcd := gcd(r.Numerator, r.Denominator)
+	result := Rational{r.Numerator / gcd, r.Denominator / gcd}
+	if result.Denominator < 1 {
+		result = Rational{result.Numerator * -1, result.Denominator * -1}
 	}
 	return result
 }
 
 func (r Rational) IsNaN() bool {
-	return r.denominator == 0
+	return r.Denominator == 0
 }
