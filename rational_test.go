@@ -172,6 +172,20 @@ func TestIsNaN(t *testing.T) {
 	}
 }
 
+func ExampleRational_Plus() {
+	a := Rational{1, 2}
+	b := Rational{1, 5}
+	fmt.Println(a.Plus(b))
+	// Output: 7/10
+}
+
+func ExampleRational() {
+	a := Rational{1, 2}
+
+	fmt.Println(a)
+	// Output: 1/2
+}
+
 func equal[T comparable](t *testing.T, got, want T) {
 	t.Helper()
 	if got != want {
