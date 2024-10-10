@@ -1,10 +1,22 @@
+// Package rational implements rational numbers.
+//
+// In addition to arithmetic functions Plus, Minus, Times and DivideBy, the package also implements conversion, comparison and conversion from integers.
+//
+// The package also provides functions for parsing rational numbers from strings and outputting rational numbers as strings.
+//
+// Rational numbers are value types. Once created, they cannot and should not be changed. The result of all operations is always a new rational number.
 package rational
 
 import (
-	"errors"
 	"fmt"
 )
 
+// Rational ist ein Datentyp, der rationale Zahlen repräsentiert.
+//
+// Rationale Zahlen bestehen aus einem Zähler und einem Nenner.
+// Wenn der Nenner den Wert 0 besitzt, ist die rationale Zahl nicht definiert; Sie besitzt dann den Wert NaN (Not a number).
+//
+// Die Ergebnisse aller Operationen mit undefinierten rationalen Zahl führen wiederum zu einer undefinierten rationalen Zahl.
 type Rational struct {
 	numerator   int
 	denominator int
@@ -18,30 +30,12 @@ func (r Rational) String() string {
 	return fmt.Sprintf("%d/%d", r.numerator, r.denominator)
 }
 
+// FromInt converts an integer to a rational number.
 func FromInt(numerator int) Rational {
 	return Rational{
 		numerator:   numerator,
 		denominator: 1,
 	}
-}
-
-func New(numerator, demoniator int) (Rational, error) {
-	if demoniator == 0 {
-		return Rational{}, errors.New("denominator can not be zero")
-	}
-
-	gcd := gcd(numerator, demoniator)
-	return Rational{numerator / gcd, demoniator / gcd}, nil
-}
-
-func MustRational(a, b int) Rational {
-	rational, err := New(a, b)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return rational
 }
 
 func gcd(a, b int) int {

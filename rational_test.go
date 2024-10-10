@@ -70,9 +70,9 @@ func TestPlus(t *testing.T) {
 	tests := map[string]struct {
 		left, right, want Rational
 	}{
-		"1/2 + 1/2 = 1":   {MustRational(1, 2), MustRational(1, 2), FromInt(1)},
+		"1/2 + 1/2 = 1":   {Rational{1, 2}, Rational{1, 2}, FromInt(1)},
 		"2 + 3 = 5":       {FromInt(2), FromInt(3), FromInt(5)},
-		"1/2 + 1/3 = 5/6": {MustRational(1, 2), MustRational(1, 3), MustRational(5, 6)},
+		"1/2 + 1/3 = 5/6": {Rational{1, 2}, Rational{1, 3}, Rational{5, 6}},
 	}
 
 	for name, test := range tests {
