@@ -1,6 +1,6 @@
 // Package rational implements rational numbers.
 //
-// # In addition to arithmetic functions Plus, Minus, Times and DivideBy, the package also implements conversion and comparison.
+// In addition to arithmetic functions Plus, Minus, Times and DivideBy, the package also implements conversion and comparison.
 //
 // Rational numbers are value types. Once created, they cannot and should not be changed. The result of all operations are always a new rational number.
 package rational
@@ -90,9 +90,9 @@ func (left Rational) Times(right Rational) Rational {
 }
 
 // DivideBy calculates the quotient of left and right.
-
+//
 // The result is normalized.
-
+//
 // If IsNaN is true for one of the two operands, the method returns a rational number for which IsNan is also true.
 func (left Rational) DivideBy(right Rational) Rational {
 	if left.IsNaN() || right.IsNaN() {
