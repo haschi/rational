@@ -1,22 +1,22 @@
 // Package rational implements rational numbers.
 //
-// In addition to arithmetic functions Plus, Minus, Times and DivideBy, the package also implements conversion, comparison and conversion from integers.
+// # In addition to arithmetic functions Plus, Minus, Times and DivideBy, the package also implements conversion and comparison.
 //
-// The package also provides functions for parsing rational numbers from strings and outputting rational numbers as strings.
-//
-// Rational numbers are value types. Once created, they cannot and should not be changed. The result of all operations is always a new rational number.
+// Rational numbers are value types. Once created, they cannot and should not be changed. The result of all operations are always a new rational number.
 package rational
 
 import (
 	"fmt"
 )
 
-// Rational ist ein Datentyp, der rationale Zahlen repräsentiert.
+// Rational is a data type that represents rational numbers.
 //
-// Rationale Zahlen bestehen aus einem Zähler und einem Nenner.
-// Wenn der Nenner den Wert 0 besitzt, ist die rationale Zahl nicht definiert; Sie besitzt dann den Wert NaN (Not a number).
+// Rational numbers consist of a numerator and a denominator.
 //
-// Die Ergebnisse aller Operationen mit undefinierten rationalen Zahl führen wiederum zu einer undefinierten rationalen Zahl.
+// If the denominator has the value 0, the rational number is not defined.
+// They are then not a number (NaN).
+// This can be checked using the IsNaN method.
+// Operations with operands for which IsNaN is true in turn produce a result for which IsNaN is also true.
 type Rational struct {
 	Numerator   int
 	Denominator int
@@ -42,34 +42,43 @@ func FromInt(numerator int) Rational {
 	}
 }
 
-func gcd(a, b int) int {
-	for b != 0 {
-		a, b = b, a%b
-	}
-
-	return a
-}
-
+// Plus calculates the sum of left and right.
+//
+// The result is normalized.
+//
+// If IsNaN is true for one of the two operands, the method returns a rational number for which IsNan is also true.
 func (left Rational) Plus(right Rational) Rational {
 	if left.IsNaN() || right.IsNaN() {
 		return Rational{}
 	}
 
-	numerator := right.Numerator*left.Denominator + left.Numerator*right.Denominator
-	denominator := right.Denominator * left.Denominator
-	return Rational{numerator, denominator}.normalize()
+	return Rational{
+		Numerator:   right.Numerator*left.Denominator + left.Numerator*right.Denominator,
+		Denominator: right.Denominator * left.Denominator,
+	}.normalize()
 }
 
+// Minus calculates the difference between left and right.
+//
+// The result is normalized.
+//
+// If IsNaN is true for one of the two operands, the method returns a rational number for which IsNan is also true.
 func (left Rational) Minus(right Rational) Rational {
 	if left.IsNaN() || right.IsNaN() {
 		return Rational{}
 	}
 
-	numerator := left.Numerator*right.Denominator - right.Numerator*left.Denominator
-	denominator := right.Denominator * left.Denominator
-	return Rational{numerator, denominator}.normalize()
+	return Rational{
+		Numerator:   left.Numerator*right.Denominator - right.Numerator*left.Denominator,
+		Denominator: right.Denominator * left.Denominator,
+	}.normalize()
 }
 
+// Times calculates the product of left and right.
+//
+// The result is normalized.
+//
+// If IsNaN is true for one of the two operands, the method returns a rational number for which IsNan is also true.
 func (left Rational) Times(right Rational) Rational {
 	if left.IsNaN() || right.IsNaN() {
 		return Rational{}
@@ -80,6 +89,11 @@ func (left Rational) Times(right Rational) Rational {
 	return Rational{numerator, denominator}.normalize()
 }
 
+// DivideBy calculates the quotient of left and right.
+
+// The result is normalized.
+
+// If IsNaN is true for one of the two operands, the method returns a rational number for which IsNan is also true.
 func (left Rational) DivideBy(right Rational) Rational {
 	if left.IsNaN() || right.IsNaN() {
 		return Rational{}
@@ -90,6 +104,19 @@ func (left Rational) DivideBy(right Rational) Rational {
 	return Rational{numerator, denominator}.normalize()
 }
 
+// IsNaN reports whether the value r is a valid rational number.
+func (r Rational) IsNaN() bool {
+	return r.Denominator == 0
+}
+
+func gcd(a, b int) int {
+	for b != 0 {
+		a, b = b, a%b
+	}
+
+	return a
+}
+
 func (r Rational) normalize() Rational {
 	gcd := gcd(r.Numerator, r.Denominator)
 	result := Rational{r.Numerator / gcd, r.Denominator / gcd}
@@ -97,8 +124,4 @@ func (r Rational) normalize() Rational {
 		result = Rational{result.Numerator * -1, result.Denominator * -1}
 	}
 	return result
-}
-
-func (r Rational) IsNaN() bool {
-	return r.Denominator == 0
 }
